@@ -1,9 +1,5 @@
 use std::{
-    fs::{exists, remove_file},
-    io::Read,
-    os::unix::net::{UnixListener, UnixStream},
-    process::exit,
-    thread,
+    fs::{exists, remove_file}, io::{Read, Write}, net::Shutdown, os::unix::net::{UnixListener, UnixStream}, process::exit, thread
 };
 
 fn main() {
@@ -43,5 +39,15 @@ fn handle_client(mut stream: UnixStream) {
     match stream.read_to_string(&mut buf) {
         Ok(num_bytes) => println!("Read {} bytes: {}", num_bytes, buf),
         Err(error) => println!("Error reading from socket: {}", error),
+    }
+
+    let message = "hi!".as_bytes();
+
+    if let Err(error) = stream.write_all(message) {
+        println!("Error responding to client: {}", error);
+    }
+
+    if let Err(error) = stream.shutdown(Shutdown::Write) {
+        println!("Error closing write connection to client: {}", error);
     }
 }
