@@ -1,4 +1,9 @@
-use std::{io::{Read, Write}, net::Shutdown, os::unix::net::UnixStream, process::exit};
+use std::{
+    io::{Read, Write},
+    net::Shutdown,
+    os::unix::net::UnixStream,
+    process::exit,
+};
 
 mod container;
 
@@ -24,7 +29,10 @@ fn main() {
 
     // close the write connection and tell the server we are finished writing
     if let Err(error) = conn.shutdown(Shutdown::Write) {
-        println!("An error occurred attempting to shutdown write connection: {}", error);
+        println!(
+            "An error occurred attempting to shutdown write connection: {}",
+            error
+        );
         exit(1);
     }
 
@@ -33,5 +41,4 @@ fn main() {
         Ok(num_bytes) => println!("Read {} bytes: {}", num_bytes, buf),
         Err(error) => println!("Error reading from socket: {}", error),
     }
-
 }
